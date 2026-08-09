@@ -22,3 +22,18 @@ export const listConversations = asyncHandler(async (req: Request, res: Response
 export const symptomAnalysis = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, await orchestrator.runSymptomAnalysis(req.user!, req.body), 201);
 });
+
+export const saveScreeningRisk = asyncHandler(async (req: Request, res: Response) => {
+  // We use req.user!.patientId for the patient if the requester is the patient, 
+  // or req.body.patientId if a doctor is submitting it for a patient.
+  const patientId = req.user!.patientId || req.body.patientId;
+  if (!patientId) {
+     return res.status(400).json({ success: false, message: "patientId is required" });
+  }
+  
+  sendSuccess(res, await orchestrator.saveScreeningRisk(req.user!, {
+     patientId: patientId,
+     inputSnapshot: req.body.inputSnapshot,
+     output: req.body.output
+  }), 201);
+});

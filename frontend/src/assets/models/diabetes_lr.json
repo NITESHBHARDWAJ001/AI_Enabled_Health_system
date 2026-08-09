@@ -1,0 +1,91 @@
+{
+  "schema": "riskengine/logistic-v1",
+  "target": "diabetes",
+  "engine_version": "0.1.0",
+  "feature_names": [
+    "age_years",
+    "sex_female",
+    "bmi",
+    "smoker_ever",
+    "smoker_current",
+    "alcohol_heavy",
+    "physically_active",
+    "gen_health",
+    "phys_health_days",
+    "ment_health_days",
+    "diff_walking",
+    "told_high_chol",
+    "kidney_disease",
+    "stroke_history",
+    "has_healthplan",
+    "education",
+    "income"
+  ],
+  "w": [
+    0.03455501809907639,
+    -0.24042431056150046,
+    0.07203278150014773,
+    -0.03654516935697667,
+    -0.08173487480633526,
+    -0.6588145155658813,
+    -0.19614292971559147,
+    0.5003541246281887,
+    -0.00466787361363576,
+    -0.0033233543509963584,
+    0.1499577138327201,
+    0.699018911690232,
+    0.6847130212508016,
+    0.30560888562849275,
+    0.2294933052144339,
+    -0.09861893326346598,
+    -0.057222547535625196
+  ],
+  "b": -7.443191777435576,
+  "impute_median": [
+    57.0,
+    1.0,
+    27.3700008392334,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    3.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    3.0,
+    5.0
+  ],
+  "risk_bands": [
+    {
+      "band": "low",
+      "min": 0.0,
+      "max_exclusive": 0.1
+    },
+    {
+      "band": "moderate",
+      "min": 0.1,
+      "max_exclusive": 0.25
+    },
+    {
+      "band": "high",
+      "min": 0.25,
+      "max_exclusive": 1.01
+    }
+  ],
+  "prevalence_train": 0.14286141097545624,
+  "prevalence_target": 0.114,
+  "metrics": {
+    "auroc": 0.811290070794344,
+    "auprc": 0.403340257070421,
+    "brier_uncalibrated": 0.18098298197214893,
+    "brier_calibrated": 0.10240457331254599,
+    "prevalence_test": 0.1428571492433548
+  },
+  "eval": "p = 1 / (1 + exp(-(dot(w, x_raw) + b))); missing x_i -> impute_median[i]",
+  "note": "Screening triage only, not a diagnosis. Mandatory clinical referral triggers in the Layer 0 rules override this score."
+}

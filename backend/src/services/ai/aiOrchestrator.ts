@@ -4,6 +4,7 @@ import { AuthUser } from "../../middleware/auth";
 import { chatCompletion } from "./llmClient";
 import * as chatService from "./chatService";
 import { analyzeSymptomsFromText } from "./symptomAnalyzer";
+import { prisma } from "../../config/database";
 import {
   patientAssistantSystemPrompt,
   doctorAssistantSystemPrompt,
@@ -96,4 +97,39 @@ export async function runSymptomAnalysis(
   if (!transcript.trim()) throw ApiError.badRequest("Provide either conversationId or freeText to analyze");
 
   return analyzeSymptomsFromText(input.patientId, input.conversationId, transcript);
+}
+
+export async function saveScreeningRisk(
+  requester: AuthUser,
+  input: { patientId: string; inputSnapshot: any; output: any }
+) {
+  if (requester.role === Role.PATIENT && requester.patientId !== input.patientId) throw ApiError.forbidden();
+
+  const analysis = await prisma.aIAnalysis.create({
+    data: {
+      patientId: input.patientId,
+      analysisType: "CHRONIC_DISEASE_SCREENING",
+      source: "ML_SERVICE",
+      inputSnapshot: input.inputSnapshot,
+      output: input.output,
+      confidence: 1.0,
+    }
+  });
+  
+  const out = input.output;
+  const isHighRisk = (out.diabetes?.band === 'high' || out.hypertension?.band === 'high' || out.cvd?.band === 'high');
+  
+  if (isHighRisk) {
+     await prisma.notification.create({
+        data: {
+           userId: requester.id,
+           type: "DIAGNOSIS_CREATED",
+           title: "URGENT: High Risk Screening Alert",
+           message: "Patient flagged for high risk of chronic disease. Mandatory PHC referral required.",
+           data: input.output
+        }
+     });
+  }
+
+  return analysis;
 }
