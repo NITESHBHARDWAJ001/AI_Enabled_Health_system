@@ -20,3 +20,10 @@ export const symptomAnalysisSchema = z.object({
     freeText: z.string().optional(),
   }),
 });
+
+export const saveScreeningSchema = z.object({
+  body: z.object({
+    inputSnapshot: z.any(),
+    output: z.any(),
+  }),
+});

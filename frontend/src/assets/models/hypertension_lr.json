@@ -1,0 +1,91 @@
+{
+  "schema": "riskengine/logistic-v1",
+  "target": "hypertension",
+  "engine_version": "0.1.0",
+  "feature_names": [
+    "age_years",
+    "sex_female",
+    "bmi",
+    "smoker_ever",
+    "smoker_current",
+    "alcohol_heavy",
+    "physically_active",
+    "gen_health",
+    "phys_health_days",
+    "ment_health_days",
+    "diff_walking",
+    "told_high_chol",
+    "kidney_disease",
+    "stroke_history",
+    "has_healthplan",
+    "education",
+    "income"
+  ],
+  "w": [
+    0.04477937575722502,
+    -0.35653561873350464,
+    0.07195380043768428,
+    0.0512172521143829,
+    0.05728503842574966,
+    0.34550934429039226,
+    -0.02401027895613861,
+    0.3151344383312392,
+    -0.003942980908954137,
+    0.0036812414477602807,
+    0.14266324749253925,
+    0.7930552945284046,
+    0.7697942669902844,
+    0.5571761597405293,
+    0.34002559198542537,
+    -0.06031728320206562,
+    -0.01951792257705936
+  ],
+  "b": -6.335434239716738,
+  "impute_median": [
+    57.0,
+    1.0,
+    27.3700008392334,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    3.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    3.0,
+    5.0
+  ],
+  "risk_bands": [
+    {
+      "band": "low",
+      "min": 0.0,
+      "max_exclusive": 0.1
+    },
+    {
+      "band": "moderate",
+      "min": 0.1,
+      "max_exclusive": 0.25
+    },
+    {
+      "band": "high",
+      "min": 0.25,
+      "max_exclusive": 1.01
+    }
+  ],
+  "prevalence_train": 0.4155414402484894,
+  "prevalence_target": 0.355,
+  "metrics": {
+    "auroc": 0.7984001083674434,
+    "auprc": 0.7177040662489051,
+    "brier_uncalibrated": 0.1838852790226849,
+    "brier_calibrated": 0.17987999224900827,
+    "prevalence_test": 0.41554659605026245
+  },
+  "eval": "p = 1 / (1 + exp(-(dot(w, x_raw) + b))); missing x_i -> impute_median[i]",
+  "note": "Screening triage only, not a diagnosis. Mandatory clinical referral triggers in the Layer 0 rules override this score."
+}

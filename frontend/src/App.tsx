@@ -25,6 +25,7 @@ import AdminDashboard from "@/features/admin/AdminDashboard";
 import AdminDoctors from "@/features/admin/AdminDoctors";
 import AdminAlerts from "@/features/admin/AdminAlerts";
 
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
 });
