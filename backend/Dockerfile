@@ -4,6 +4,12 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
 
+# Alpine ships musl + OpenSSL 3.x with no `openssl` binary by default; without it Prisma can't
+# detect which engine binary to use and silently falls back to a mismatched one that fails at
+# runtime with a non-JSON "Error loading shared library libssl..." response. schema.prisma also
+# pins `binaryTargets` to `linux-musl-openssl-3.0.x` so the right engine gets fetched here.
+RUN apk add --no-cache openssl
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
@@ -19,6 +25,8 @@ RUN npm run build
 FROM node:22-alpine AS deps
 WORKDIR /app
 
+RUN apk add --no-cache openssl
+
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
@@ -30,7 +38,10 @@ FROM node:22-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 
-RUN addgroup -S hop && adduser -S hop -G hop
+# Needed at runtime too: docker-entrypoint.sh runs `prisma migrate deploy` inside this container,
+# and the migration engine binary needs libssl present on the actual running OS, not just at build time.
+RUN apk add --no-cache openssl \
+    && addgroup -S hop && adduser -S hop -G hop
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
