@@ -29,7 +29,16 @@ function getRecognitionCtor(): (new () => SpeechRecognitionLike) | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
-export function useSpeechRecognition(onFinalTranscript: (text: string) => void) {
+export interface UseSpeechRecognitionOptions {
+  lang?: string;
+  continuous?: boolean;
+}
+
+export function useSpeechRecognition(
+  onFinalTranscript: (text: string) => void,
+  options: UseSpeechRecognitionOptions = {}
+) {
+  const { lang = "en-US", continuous = false } = options;
   const [isListening, setIsListening] = useState(false);
   const [interimText, setInterimText] = useState("");
   const [supported] = useState(() => getRecognitionCtor() !== null);
@@ -39,9 +48,9 @@ export function useSpeechRecognition(onFinalTranscript: (text: string) => void) 
     const Ctor = getRecognitionCtor();
     if (!Ctor) return;
     const recognition = new Ctor();
-    recognition.continuous = false;
+    recognition.continuous = continuous;
     recognition.interimResults = true;
-    recognition.lang = "en-US";
+    recognition.lang = lang;
 
     recognition.onresult = (event) => {
       let interim = "";
@@ -65,7 +74,7 @@ export function useSpeechRecognition(onFinalTranscript: (text: string) => void) 
 
     recognitionRef.current = recognition;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [lang, continuous]);
 
   const start = useCallback(() => {
     if (!recognitionRef.current) return;

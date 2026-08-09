@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { LayoutDashboard, UserRound, History, CalendarClock, FileStack, Stethoscope, Building2, Clock, ShieldAlert } from "lucide-react";
+import { LayoutDashboard, UserRound, History, CalendarClock, FileStack, Stethoscope, Building2, Clock, ShieldAlert, Activity } from "lucide-react";
 import { PortalLayout, type NavItem } from "@/components/shared/PortalLayout";
 import { ProtectedRoute } from "@/components/shared/ProtectedRoute";
 import { Toaster } from "@/components/shared/Toaster";
@@ -15,6 +15,7 @@ import PatientProfile from "@/features/patient/PatientProfile";
 import PatientTimeline from "@/features/patient/PatientTimeline";
 import PatientAppointments from "@/features/patient/PatientAppointments";
 import PatientDocuments from "@/features/patient/PatientDocuments";
+import RiskScreening from "@/features/patient/RiskScreening";
 
 import DoctorDashboard from "@/features/doctor/DoctorDashboard";
 import DoctorPatientProfile from "@/features/doctor/DoctorPatientProfile";
@@ -34,6 +35,7 @@ const patientNav: NavItem[] = [
   { to: "/patient/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/patient/timeline", label: "Medical Timeline", icon: History },
   { to: "/patient/appointments", label: "Appointments", icon: CalendarClock },
+  { to: "/patient/screening", label: "Risk Screening", icon: Activity },
   { to: "/patient/documents", label: "Documents", icon: FileStack },
   { to: "/patient/profile", label: "Profile", icon: UserRound },
 ];
@@ -69,6 +71,7 @@ export default function App() {
               <Route path="/patient/dashboard" element={<PatientDashboard />} />
               <Route path="/patient/timeline" element={<PatientTimeline />} />
               <Route path="/patient/appointments" element={<PatientAppointments />} />
+              <Route path="/patient/screening" element={<RiskScreening />} />
               <Route path="/patient/documents" element={<PatientDocuments />} />
               <Route path="/patient/profile" element={<PatientProfile />} />
             </Route>

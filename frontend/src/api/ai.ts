@@ -25,3 +25,14 @@ export async function runSymptomAnalysis(input: { patientId: string; conversatio
   const res = await api.post("/ai/symptom-analysis", input);
   return res.data.data;
 }
+
+export interface ScreeningResult {
+  diabetes: { probability: number; band: string };
+  hypertension: { probability: number; band: string };
+  cvd: { probability: number; band: string };
+}
+
+export async function submitScreening(input: { patientId: string; inputSnapshot: unknown; output: ScreeningResult }) {
+  const res = await api.post("/ai/screening", input);
+  return res.data.data;
+}

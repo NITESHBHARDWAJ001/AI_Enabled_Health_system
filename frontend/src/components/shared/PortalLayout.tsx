@@ -7,6 +7,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { NotificationBell } from "./NotificationBell";
 import { cn } from "@/lib/cn";
 import * as authApi from "@/api/auth";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
 
 export interface NavItem {
   to: string;
@@ -19,6 +20,7 @@ export function PortalLayout({ navItems, portalLabel }: { navItems: NavItem[]; p
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, refreshToken, clear } = useAuthStore();
   const navigate = useNavigate();
+  useOfflineSync();
 
   const displayName = user?.profile && "fullName" in user.profile ? user.profile.fullName : user?.email ?? "";
 
