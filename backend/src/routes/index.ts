@@ -11,6 +11,7 @@ import medicalHistoryRoutes from "../modules/medical-history/medical-history.rou
 import medicalDocumentRoutes from "../modules/medical-documents/medical-documents.routes";
 import aiRoutes from "../modules/ai/ai.routes";
 import notificationRoutes from "../modules/notifications/notifications.routes";
+import transcriptionRoutes from "../modules/transcription/transcription.routes";
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use("/medical-history", medicalHistoryRoutes);
 router.use("/documents", medicalDocumentRoutes);
 router.use("/ai", aiRoutes);
 router.use("/notifications", notificationRoutes);
+router.use("/transcription", transcriptionRoutes);
 
 export default router;
