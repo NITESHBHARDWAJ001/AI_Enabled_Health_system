@@ -60,7 +60,10 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:5000/health || exit 1
 
-# Entrypoint runs `prisma migrate deploy` (applies committed migrations to DATABASE_URL,
-# never generates new ones) before handing off to the CMD below.
+# Entrypoint applies committed migrations to DATABASE_URL via `prisma migrate deploy`; if that
+# fails (e.g. migration-history drift against this specific database) it falls back to forcing
+# the live schema to match schema.prisma via `prisma db push --accept-data-loss` — see
+# docker-entrypoint.sh. Either way, the entrypoint never *creates* new migrations: those are
+# authored locally with `prisma migrate dev` and committed to prisma/migrations before deploying.
 ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["node", "dist/server.js"]
